@@ -83,32 +83,40 @@
     box-shadow: 0 6px 24px rgba(142,90,90,.10);
   }
   .chart {
-    display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+    display: flex; justify-content: center; align-items: stretch; gap: 26px;
     position: relative; padding: 20px 6px;
   }
-  .side { flex: 1; min-width: 260px; text-align: center; }
+  .side { flex: 1; min-width: 230px; text-align: center; }
   .side .side-title { font-size: 16px; letter-spacing: 4px; margin-bottom: 12px; font-weight: 700; }
-  .side.male .side-title { color: #8e5a5a; }
-  .side.female .side-title { color: #9a7a90; }
-  .tables { display: flex; flex-direction: column; gap: 8px; align-items: center; }
-  .t-row { display: flex; gap: 8px; justify-content: center; }
+  .side.male .side-title { color: #5a7a9a; }
+  .side.female .side-title { color: #c07a90; }
+  .tables { display: flex; flex-direction: row; gap: 10px; justify-content: center; align-items: flex-start; }
+  .t-col { display: flex; flex-direction: column; gap: 10px; justify-content: flex-start; }
   .tcell {
-    width: 128px; min-height: 46px; border-radius: 10px;
+    width: 104px; height: 104px; border-radius: 50%;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 6px 4px;
   }
-  .tcell .t-no { font-size: 15px; font-weight: 700; letter-spacing: 2px; }
-  .tcell .t-names { font-size: 10px; line-height: 1.35; margin-top: 2px; letter-spacing: 0; }
-  .tcell.male { background: #f3ddd8; color: #8e5a5a; border: 2px solid #e0bfb6; }
-  .tcell.female { background: #ece5ef; color: #8a7a90; border: 2px solid #d8ccdf; }
+  .tcell .t-no { font-size: 14px; font-weight: 700; letter-spacing: 2px; }
+  .tcell.male { background: #dbe7f2; color: #4a6a8a; border: 3px solid #a9bfd6; }
+  .tcell.female { background: #f7dde4; color: #a0596f; border: 3px solid #e2b3c0; }
   .tcell.main {
-    width: 140px; min-height: 54px;
-    background: linear-gradient(135deg, #c98f7a, #8e5a5a); color: #fff;
-    border: none; font-size: 17px; box-shadow: 0 3px 10px rgba(142,90,90,.3);
+    width: 132px; height: 132px;
+    background: linear-gradient(135deg, #a06fc9, #7a4f9e); color: #fff;
+    border: none; font-size: 17px; box-shadow: 0 3px 10px rgba(122,79,158,.35);
   }
-  .center-aisle { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 16px; }
-  .aisle-label { font-size: 13px; color: #b0a0a0; letter-spacing: 6px; writing-mode: vertical-rl; margin: 200px 0; }
-  .door { font-size: 13px; letter-spacing: 2px; color: #b0a0a0; border-top: 3px solid #b98a7a; padding-top: 6px; margin-top: 300px; }
+  .center-aisle { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 6px; }
+  .aisle {
+    width: 34px; flex: 1; margin: 2px 0;
+    background: linear-gradient(#fff, #f7efe6); border: 2px solid #d9c3ab; border-radius: 14px;
+    box-shadow: inset 0 0 6px rgba(185,138,122,.18);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .aisle .aisle-label { font-size: 13px; color: #b0a0a0; letter-spacing: 6px; writing-mode: vertical-rl; }
+  .door {
+    font-size: 13px; letter-spacing: 2px; color: #b0a0a0;
+    border-top: 3px solid #b98a7a; padding: 8px 14px 0; text-align: center;
+  }
   .legend { text-align: center; font-size: 13px; color: #9a8a8a; margin-top: 14px; letter-spacing: 1px; }
   .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 16px; box-shadow: 0 6px 24px rgba(142,90,90,.10); }
   .guest-table { width: 100%; min-width: 520px; border-collapse: collapse; background: #fff; box-shadow: 0 6px 24px rgba(142,90,90,.10); }
@@ -134,13 +142,17 @@
     .search-row { flex-direction: column; align-items: stretch; }
     #searchInput { width: 100%; max-width: none; min-width: 0; font-size: 16px; }
     #searchBtn { width: 100%; padding: 14px; font-size: 16px; }
-    .chart { flex-direction: column; align-items: stretch; padding: 12px 4px; }
-    .side { width: 100%; min-width: 0; }
-    .tcell { width: 108px; }
-    .tcell.main { width: 120px; min-height: 48px; }
-    .center-aisle { flex-direction: row; justify-content: center; align-items: center; gap: 12px; padding: 14px 0 4px; }
-    .aisle-label { writing-mode: horizontal-tb; margin: 0; padding: 4px 14px; letter-spacing: 4px; border-left: 3px solid #b98a7a; border-top: none; }
-    .door { margin: 0; border: none; padding: 0; font-size: 12px; }
+    .chart { flex-direction: column; align-items: center; padding: 12px 4px; gap: 16px; }
+    .side { flex: none; width: 100%; min-width: 0; }
+    .tables { gap: 8px; }
+    .t-col { gap: 8px; }
+    .tcell { width: 78px; height: 78px; }
+    .tcell .t-no { font-size: 12px; }
+    .tcell.main { width: 108px; height: 108px; }
+    .center-aisle { flex-direction: column; align-items: center; gap: 6px; padding: 10px 0 0; }
+    .aisle { flex: none; width: 26px; height: 90px; margin: 2px 0; }
+    .aisle .aisle-label { writing-mode: vertical-rl; font-size: 12px; letter-spacing: 4px; }
+    .door { margin: 0; border-top: 3px solid #b98a7a; padding: 6px 10px 0; font-size: 12px; }
     .result { padding: 20px 14px; }
     .result .table-badge { font-size: 24px; padding: 10px 22px; }
     .section-title { margin: 26px 0 12px; }
@@ -212,53 +224,45 @@
   <div class="chart-card">
     <div class="chart">
       <div class="side female">
-        <div class="side-title">女方賓客區</div>
+        <div class="side-title">女方賓客</div>
         <div class="tables">
-          <div class="t-row">
-            <div class="tcell female"><div class="t-no">第 1 桌</div><div class="t-names">王鈐鍵家<br>林祐德家<br>林金麗<br>林金鳳</div></div>
-            <div class="tcell female"><div class="t-no">第 5 桌</div><div class="t-names">廖秀貞家<br>蔡家欽家<br>新莊阿嬤<br>廖宥廷</div></div>
+          <div class="t-col">
+            <div class="tcell female"><div class="t-no">第 1 桌</div></div>
+            <div class="tcell female"><div class="t-no">第 2 桌</div></div>
+            <div class="tcell female"><div class="t-no">第 3 桌</div></div>
+            <div class="tcell female"><div class="t-no">第 4 桌</div></div>
           </div>
-          <div class="t-row">
-            <div class="tcell female"><div class="t-no">第 2 桌</div><div class="t-names">林佑穗家<br>王如蘋家<br>林佑賓家</div></div>
-            <div class="tcell female"><div class="t-no">第 6 桌</div><div class="t-names">王鼎盛家<br>蔡美雲家<br>王昱鈞<br>羅世宏</div></div>
-          </div>
-          <div class="t-row">
-            <div class="tcell female"><div class="t-no">第 3 桌</div><div class="t-names">王鴻澤家<br>鶯歌阿嬤<br>王素蓮<br>王曉慧<br>王連福<br>楊金塗</div></div>
-            <div class="tcell female"><div class="t-no">第 7 桌</div><div class="t-names">陳心璿<br>陳良華老師<br>王慧締<br>徐嘉連老師<br>廖發發<br>神農陳太<br>吳怡萱<br>余培郁<br>卓子揚</div></div>
-          </div>
-          <div class="t-row">
-            <div class="tcell female"><div class="t-no">第 4 桌</div><div class="t-names">王炳超家<br>王炳華家<br>阿凱伯<br>阿正伯</div></div>
-            <div class="tcell female"><div class="t-no">第 8 桌</div><div class="t-names">蕭勝心<br>游程琪<br>涂興昀<br>沈佳陽</div></div>
+          <div class="t-col">
+            <div class="tcell female"><div class="t-no">第 5 桌</div></div>
+            <div class="tcell female"><div class="t-no">第 6 桌</div></div>
+            <div class="tcell female"><div class="t-no">第 7 桌</div></div>
+            <div class="tcell female"><div class="t-no">第 8 桌</div></div>
           </div>
         </div>
       </div>
       <div class="center-aisle">
         <div class="tcell main"><div class="t-no">主桌</div></div>
-        <div class="aisle-label">走道</div>
+        <div class="aisle"><div class="aisle-label">走道</div></div>
         <div class="door">門口</div>
       </div>
       <div class="side male">
-        <div class="side-title">男方賓客區</div>
+        <div class="side-title">男方賓客</div>
         <div class="tables">
-          <div class="t-row">
-            <div class="tcell male"><div class="t-no">第 9 桌</div><div class="t-names">姜皆德家<br>李國榮家<br>楊來春</div></div>
-            <div class="tcell male"><div class="t-no">第 13 桌</div><div class="t-names">北五蘆<br>鄭博仁<br>邱顯泰<br>黃瑾瑜<br>呂其軒<br>紀俊丞<br>陳燕雪</div></div>
+          <div class="t-col">
+            <div class="tcell male"><div class="t-no">第 9 桌</div></div>
+            <div class="tcell male"><div class="t-no">第 10 桌</div></div>
+            <div class="tcell male"><div class="t-no">第 11 桌</div></div>
+            <div class="tcell male"><div class="t-no">第 12 桌</div></div>
           </div>
-          <div class="t-row">
-            <div class="tcell male"><div class="t-no">第 10 桌</div><div class="t-names">吳文琳家<br>劉晏廷<br>呂秉豐<br>何凱皓</div></div>
-            <div class="tcell male"><div class="t-no">第 14 桌</div><div class="t-names">蔡素雲<br>陳文雄<br>侯雅莉<br>紀宗成<br>丁禎松<br>黃明煌</div></div>
-          </div>
-          <div class="t-row">
-            <div class="tcell male"><div class="t-no">第 11 桌</div><div class="t-names">童鈺婷<br>陳煜智<br>張紘瑞<br>謝青州<br>張茗雅<br>鐘文駿<br>陳柏因<br>黃靖雅</div></div>
-            <div class="tcell male"><div class="t-no">第 15 桌</div><div class="t-names">劉俊廷<br>許文瀚<br>張家宏<br>蔡岳峰<br>張智翔</div></div>
-          </div>
-          <div class="t-row">
-            <div class="tcell male"><div class="t-no">第 12 桌</div><div class="t-names">王群策<br>王怡蓁<br>林秉皞<br>岩子晅<br>林芮蝶<br>蔡汶玲<br>羅聖凱<br>蔡宜靜<br>余允中</div></div>
+          <div class="t-col">
+            <div class="tcell male"><div class="t-no">第 13 桌</div></div>
+            <div class="tcell male"><div class="t-no">第 14 桌</div></div>
+            <div class="tcell male"><div class="t-no">第 15 桌</div></div>
           </div>
         </div>
       </div>
     </div>
-    <div class="legend">主桌位於中央，走道自門口向前延伸；左側為女方賓客區（1–8桌），右側為男方賓客區（9–15桌）</div>
+    <div class="legend">主桌位於中央，走道自門口延伸；左側為女方賓客區（1–8桌），右側為男方賓客區（9–15桌）</div>
   </div>
 
   <div class="section-title">完整賓客名單</div>
