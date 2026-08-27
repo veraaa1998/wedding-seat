@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAN &amp; VERA 婚宴座位查詢</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+    background: linear-gradient(160deg, #fdf6f0 0%, #fbeef1 40%, #f6e7ef 100%);
+    min-height: 100vh;
+    color: #4a3b3b;
+  }
+  .hero {
+    text-align: center;
+    padding: 44px 20px 26px;
+    background: linear-gradient(135deg, #8e5a5a, #b98a7a);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(0,0,0,.12);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero .names { font-size: 34px; letter-spacing: 8px; font-weight: 700; position: relative; z-index: 2; }
+  .hero .sub { margin-top: 8px; font-size: 18px; letter-spacing: 6px; opacity: .95; position: relative; z-index: 2; }
+  .hero .note { margin-top: 12px; font-size: 13px; letter-spacing: 2px; opacity: .85; position: relative; z-index: 2; }
+  /* hero 缎带 */
+  .hero .ribbon-left, .hero .ribbon-right { position: absolute; top: 0; z-index: 1; opacity: .55; }
+  .hero .ribbon-left { left: 0; transform: rotate(180deg); }
+  .hero .ribbon-right { right: 0; }
+  .container { max-width: 800px; margin: 0 auto; padding: 28px 16px 60px; }
+  .search-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 26px 24px;
+    box-shadow: 0 6px 24px rgba(142,90,90,.14);
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .search-box h2 { font-size: 20px; letter-spacing: 3px; margin-bottom: 16px; color: #8e5a5a; }
+  .search-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  #searchInput {
+    flex: 1; max-width: 360px; min-width: 220px;
+    padding: 12px 18px; font-size: 18px; letter-spacing: 2px;
+    border: 2px solid #e3c9c9; border-radius: 10px; outline: none;
+    transition: border-color .2s;
+  }
+  #searchInput:focus { border-color: #b98a7a; }
+  #searchBtn {
+    padding: 12px 30px; font-size: 17px; letter-spacing: 3px;
+    background: linear-gradient(135deg, #8e5a5a, #b98a7a);
+    color: #fff; border: none; border-radius: 10px; cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  #searchBtn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(142,90,90,.35); }
+  .result {
+    display: none;
+    background: #fff; border-radius: 16px; padding: 26px 24px;
+    box-shadow: 0 6px 24px rgba(142,90,90,.12);
+    margin-bottom: 28px; text-align: center;
+  }
+  .result.show { display: block; animation: fadeIn .3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to {opacity:1; transform:none;} }
+  .result .guest-name { font-size: 26px; font-weight: 700; color: #8e5a5a; letter-spacing: 3px; }
+  .result .table-badge {
+    display: inline-block; margin: 12px 0 6px;
+    font-size: 30px; font-weight: 800; letter-spacing: 4px;
+    color: #fff;
+    background: linear-gradient(135deg, #c98f7a, #8e5a5a);
+    padding: 12px 34px; border-radius: 40px;
+    box-shadow: 0 4px 14px rgba(142,90,90,.35);
+  }
+  .result .same-table { margin-top: 14px; color: #7a6a6a; font-size: 14px; letter-spacing: 1px; }
+  .result .same-table span { color: #b0766a; font-weight: 600; }
+  .result .miss { color: #b06060; font-size: 16px; letter-spacing: 2px; padding: 10px 0; }
+  .result .miss .tips { margin-top: 10px; font-size: 13px; color: #9a8a8a; }
+  .section-title {
+    font-size: 20px; letter-spacing: 4px; color: #8e5a5a;
+    margin: 34px 0 14px; text-align: center; font-weight: 700;
+  }
+  .chart-card {
+    background: #fff; border-radius: 16px; padding: 22px;
+    box-shadow: 0 6px 24px rgba(142,90,90,.10);
+  }
+  .chart {
+    display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+    position: relative; padding: 20px 6px;
+  }
+  .side { flex: 1; min-width: 260px; text-align: center; }
+  .side .side-title { font-size: 16px; letter-spacing: 4px; margin-bottom: 12px; font-weight: 700; }
+  .side.male .side-title { color: #8e5a5a; }
+  .side.female .side-title { color: #9a7a90; }
+  .tables { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .t-row { display: flex; gap: 8px; justify-content: center; }
+  .tcell {
+    width: 128px; min-height: 46px; border-radius: 10px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 6px 4px;
+  }
+  .tcell .t-no { font-size: 15px; font-weight: 700; letter-spacing: 2px; }
+  .tcell .t-names { font-size: 10px; line-height: 1.35; margin-top: 2px; letter-spacing: 0; }
+  .tcell.male { background: #f3ddd8; color: #8e5a5a; border: 2px solid #e0bfb6; }
+  .tcell.female { background: #ece5ef; color: #8a7a90; border: 2px solid #d8ccdf; }
+  .tcell.main {
+    width: 140px; min-height: 54px;
+    background: linear-gradient(135deg, #c98f7a, #8e5a5a); color: #fff;
+    border: none; font-size: 17px; box-shadow: 0 3px 10px rgba(142,90,90,.3);
+  }
+  .center-aisle { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 16px; }
+  .aisle-label { font-size: 13px; color: #b0a0a0; letter-spacing: 6px; writing-mode: vertical-rl; margin: 200px 0; }
+  .door { font-size: 13px; letter-spacing: 2px; color: #b0a0a0; border-top: 3px solid #b98a7a; padding-top: 6px; margin-top: 300px; }
+  .legend { text-align: center; font-size: 13px; color: #9a8a8a; margin-top: 14px; letter-spacing: 1px; }
+  .guest-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 6px 24px rgba(142,90,90,.10); }
+  .guest-table th { background: #8e5a5a; color: #fff; padding: 12px; font-size: 15px; letter-spacing: 3px; }
+  .guest-table td { padding: 10px 14px; border-bottom: 1px solid #f3e6e0; font-size: 15px; letter-spacing: 1px; text-align: center; }
+  .guest-table tr:nth-child(even) td { background: #fbf5f2; }
+  .guest-table td.table-no { font-weight: 700; color: #8e5a5a; white-space: nowrap; }
+  .guest-table td.side-tag { font-weight: 600; white-space: nowrap; }
+  .guest-table td.side-tag.female { color: #9a7a90; }
+  .guest-table td.side-tag.male { color: #8e5a5a; }
+  .guest-table td.names { text-align: left; }
+  .footer { text-align: center; color: #b0a0a0; font-size: 12px; letter-spacing: 2px; margin-top: 40px; }
+  @media (max-width: 600px) {
+    .hero .names { font-size: 26px; letter-spacing: 5px; }
+    .tcell { width: 104px; }
+  }
+
+  /* ===== 浪漫裝飾（已移除左右側欄） ===== */
+
+  /* ===== 飄落花瓣 ===== */
+  .petal {
+    position: fixed; top: -30px; z-index: 40; pointer-events: none;
+    width: 14px; height: 18px; border-radius: 70% 30% 70% 30%;
+    background: linear-gradient(135deg, #f7c8c8, #e8a0a0);
+    opacity: 0; animation: fall linear infinite;
+  }
+  @keyframes fall {
+    0% { transform: translateY(-40px) rotate(0deg); opacity: 0; }
+    8% { opacity: .55; }
+    100% { transform: translateY(106vh) rotate(360deg); opacity: .15; }
+  }
+</style>
+</head>
+<body>
+
+
+<!-- 飄落花瓣 -->
+<div class="petal" style="left:6%; animation-duration:9s; animation-delay:0s;"></div>
+<div class="petal" style="left:16%; animation-duration:12s; animation-delay:2s;"></div>
+<div class="petal" style="left:28%; animation-duration:10s; animation-delay:4s;"></div>
+<div class="petal" style="left:46%; animation-duration:13s; animation-delay:1s;"></div>
+<div class="petal" style="left:63%; animation-duration:9s; animation-delay:5s;"></div>
+<div class="petal" style="left:78%; animation-duration:11s; animation-delay:3s;"></div>
+<div class="petal" style="left:90%; animation-duration:10s; animation-delay:6s;"></div>
+
+<div class="hero">
+  <svg class="ribbon-left" viewBox="0 0 120 80" width="150" height="100">
+    <path d="M0 0 L120 0 L120 14 L60 40 L0 14 Z" fill="#d9a0a0"/>
+    <path d="M60 40 L60 80 L48 68 Z" fill="#c98a8a"/>
+    <path d="M60 40 L72 66 Z" stroke="#c98a8a" stroke-width="6" stroke-linecap="round"/>
+  </svg>
+  <svg class="ribbon-right" viewBox="0 0 120 80" width="150" height="100">
+    <path d="M0 0 L120 0 L120 14 L60 40 L0 14 Z" fill="#d9a0a0"/>
+    <path d="M60 40 L60 80 L72 68 Z" fill="#c98a8a"/>
+    <path d="M60 40 L48 66 Z" stroke="#c98a8a" stroke-width="6" stroke-linecap="round"/>
+  </svg>
+  <div class="names">IAN &amp; VERA</div>
+  <div class="sub">婚宴座位查詢</div>
+  <div class="note">輸入姓名，即可查詢您的桌位</div>
+</div>
+
+<div class="container">
+
+  <div class="search-box">
+    <h2>座位查詢</h2>
+    <div class="search-row">
+      <input type="text" id="searchInput" placeholder="請輸入您的姓名（如：王群策）" autocomplete="off">
+      <button id="searchBtn">查詢座位</button>
+    </div>
+  </div>
+
+  <div class="result" id="result"></div>
+
+  <div class="section-title">桌位示意圖</div>
+  <div class="chart-card">
+    <div class="chart">
+      <div class="side female">
+        <div class="side-title">女方賓客區</div>
+        <div class="tables">
+          <div class="t-row">
+            <div class="tcell female"><div class="t-no">第 1 桌</div><div class="t-names">王鈐鍵家<br>林祐德家<br>林金麗<br>林金鳳</div></div>
+            <div class="tcell female"><div class="t-no">第 5 桌</div><div class="t-names">廖秀貞家<br>蔡家欽家<br>新莊阿嬤<br>廖宥廷</div></div>
+          </div>
+          <div class="t-row">
+            <div class="tcell female"><div class="t-no">第 2 桌</div><div class="t-names">林佑穗家<br>王如蘋家<br>林佑賓家</div></div>
+            <div class="tcell female"><div class="t-no">第 6 桌</div><div class="t-names">王鼎盛家<br>蔡美雲家<br>王昱鈞<br>羅世宏</div></div>
+          </div>
+          <div class="t-row">
+            <div class="tcell female"><div class="t-no">第 3 桌</div><div class="t-names">王鴻澤家<br>鶯歌阿嬤<br>王素蓮<br>王曉慧<br>王連福<br>楊金塗</div></div>
+            <div class="tcell female"><div class="t-no">第 7 桌</div><div class="t-names">陳心璿<br>陳良華老師<br>王慧締<br>徐嘉連老師<br>廖發發<br>神農陳太<br>吳怡萱<br>余培郁<br>卓子揚</div></div>
+          </div>
+          <div class="t-row">
+            <div class="tcell female"><div class="t-no">第 4 桌</div><div class="t-names">王炳超家<br>王炳華家<br>阿凱伯<br>阿正伯</div></div>
+            <div class="tcell female"><div class="t-no">第 8 桌</div><div class="t-names">蕭勝心<br>游程琪<br>涂興昀<br>沈佳陽</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="center-aisle">
+        <div class="tcell main"><div class="t-no">主桌</div></div>
+        <div class="aisle-label">走道</div>
+        <div class="door">門口</div>
+      </div>
+      <div class="side male">
+        <div class="side-title">男方賓客區</div>
+        <div class="tables">
+          <div class="t-row">
+            <div class="tcell male"><div class="t-no">第 9 桌</div><div class="t-names">姜皆德家<br>李國榮家<br>楊來春</div></div>
+            <div class="tcell male"><div class="t-no">第 13 桌</div><div class="t-names">北五蘆<br>鄭博仁<br>邱顯泰<br>黃瑾瑜<br>呂其軒<br>紀俊丞<br>陳燕雪</div></div>
+          </div>
+          <div class="t-row">
+            <div class="tcell male"><div class="t-no">第 10 桌</div><div class="t-names">吳文琳家<br>劉晏廷<br>呂秉豐<br>何凱皓</div></div>
+            <div class="tcell male"><div class="t-no">第 14 桌</div><div class="t-names">蔡素雲<br>陳文雄<br>侯雅莉<br>紀宗成<br>丁禎松<br>黃明煌</div></div>
+          </div>
+          <div class="t-row">
+            <div class="tcell male"><div class="t-no">第 11 桌</div><div class="t-names">童鈺婷<br>陳煜智<br>張紘瑞<br>謝青州<br>張茗雅<br>鐘文駿<br>陳柏因<br>黃靖雅</div></div>
+            <div class="tcell male"><div class="t-no">第 15 桌</div><div class="t-names">劉俊廷<br>許文瀚<br>張家宏<br>蔡岳峰<br>張智翔</div></div>
+          </div>
+          <div class="t-row">
+            <div class="tcell male"><div class="t-no">第 12 桌</div><div class="t-names">王群策<br>王怡蓁<br>林秉皞<br>岩子晅<br>林芮蝶<br>蔡汶玲<br>羅聖凱<br>蔡宜靜<br>余允中</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="legend">主桌位於中央，走道自門口向前延伸；左側為女方賓客區（1–8桌），右側為男方賓客區（9–15桌）</div>
+  </div>
+
+  <div class="section-title">完整賓客名單</div>
+  <table class="guest-table">
+    <thead>
+      <tr><th style="width:100px;">桌號</th><th style="width:90px;">區域</th><th>賓客姓名</th></tr>
+    </thead>
+    <tbody id="guestList"></tbody>
+  </table>
+
+  <div class="footer">IAN &amp; VERA 婚宴 · 座位查詢系統</div>
+</div>
+
+<script>
+  // 男女雙方賓客座位資料（女方依女方座位表 PDF、男方依男方座位表 PDF 整理）
+  const guestData = [
+    { side: "女方", table: 1,  names: ["王鈐鍵家", "林祐德家", "林金麗", "林金鳳"] },
+    { side: "女方", table: 2,  names: ["林佑穗家", "王如蘋家", "林佑賓家"] },
+    { side: "女方", table: 3,  names: ["王鴻澤家", "鶯歌阿嬤", "王素蓮", "王曉慧", "王連福", "楊金塗"] },
+    { side: "女方", table: 4,  names: ["王炳超家", "王炳華家", "阿凱伯", "阿正伯"] },
+    { side: "女方", table: 5,  names: ["廖秀貞家", "蔡家欽家", "新莊阿嬤", "廖宥廷"] },
+    { side: "女方", table: 6,  names: ["王鼎盛家", "蔡美雲家", "王昱鈞", "羅世宏"] },
+    { side: "女方", table: 7,  names: ["陳心璿", "陳良華老師", "王慧締", "徐嘉連老師", "廖發發", "神農陳太", "吳怡萱", "余培郁", "卓子揚"] },
+    { side: "女方", table: 8,  names: ["蕭勝心", "游程琪", "涂興昀", "沈佳陽"] },
+    { side: "男方", table: 9,  names: ["姜皆德家", "李國榮家", "楊來春"] },
+    { side: "男方", table: 10, names: ["吳文琳家", "劉晏廷", "呂秉豐", "何凱皓"] },
+    { side: "男方", table: 11, names: ["童鈺婷", "陳煜智", "張紘瑞", "謝青州", "張茗雅", "鐘文駿", "陳柏因", "黃靖雅"] },
+    { side: "男方", table: 12, names: ["王群策", "王怡蓁", "林秉皞", "岩子晅", "林芮蝶", "蔡汶玲", "羅聖凱", "蔡宜靜", "余允中"] },
+    { side: "男方", table: 13, names: ["北五蘆", "鄭博仁", "邱顯泰", "黃瑾瑜", "呂其軒", "紀俊丞", "陳燕雪"] },
+    { side: "男方", table: 14, names: ["蔡素雲", "陳文雄", "侯雅莉", "紀宗成", "丁禎松", "黃明煌"] },
+    { side: "男方", table: 15, names: ["劉俊廷", "許文瀚", "張家宏", "蔡岳峰", "張智翔"] }
+  ];
+
+  // 渲染完整名單
+  const listBody = document.getElementById('guestList');
+  guestData.forEach(g => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="table-no">第 ${g.table} 桌</td><td class="side-tag ${g.side === '女方' ? 'female' : 'male'}">${g.side}</td><td class="names">${g.names.join('　')}</td>`;
+    listBody.appendChild(tr);
+  });
+
+  // 查詢邏輯
+  const input = document.getElementById('searchInput');
+  const btn = document.getElementById('searchBtn');
+  const resultBox = document.getElementById('result');
+
+  function doSearch() {
+    const q = input.value.trim();
+    if (!q) { showMiss('請輸入姓名'); return; }
+    const hits = [];
+    guestData.forEach(g => {
+      g.names.forEach(name => {
+        if (name.includes(q) || q.includes(name)) {
+          hits.push({ side: g.side, table: g.table, name: name, same: g.names });
+        }
+      });
+    });
+    if (hits.length === 0) {
+      showMiss(`「${q}」未找到對應座位`);
+    } else {
+      showResult(hits);
+    }
+  }
+
+  function showResult(hits) {
+    const seen = new Set();
+    const uniq = hits.filter(h => { const k = h.side + h.table + h.name; if (seen.has(k)) return false; seen.add(k); return true; });
+    let html = '';
+    uniq.forEach(h => {
+      html += `<div class="guest-name">${h.name}</div>`;
+      html += `<div class="table-badge">${h.side} 第 ${h.table} 桌</div>`;
+      html += `<div class="same-table">同桌賓客：<span>${h.same.join('、')}</span></div>`;
+      html += `<hr style="border:none;border-top:1px dashed #e3c9c9;margin:18px 0;">`;
+    });
+    html = html.replace(/<hr[^>]*>$/,'');
+    resultBox.innerHTML = html;
+    resultBox.classList.add('show');
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function showMiss(msg) {
+    resultBox.innerHTML = `<div class="miss">${msg}<div class="tips">※ 請確認姓名是否正確（男女雙方賓客皆可查詢）。</div></div>`;
+    resultBox.classList.add('show');
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  btn.addEventListener('click', doSearch);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+</script>
+
+</body>
+</html>
