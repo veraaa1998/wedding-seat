@@ -110,7 +110,8 @@
   .aisle-label { font-size: 13px; color: #b0a0a0; letter-spacing: 6px; writing-mode: vertical-rl; margin: 200px 0; }
   .door { font-size: 13px; letter-spacing: 2px; color: #b0a0a0; border-top: 3px solid #b98a7a; padding-top: 6px; margin-top: 300px; }
   .legend { text-align: center; font-size: 13px; color: #9a8a8a; margin-top: 14px; letter-spacing: 1px; }
-  .guest-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 6px 24px rgba(142,90,90,.10); }
+  .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 16px; box-shadow: 0 6px 24px rgba(142,90,90,.10); }
+  .guest-table { width: 100%; min-width: 520px; border-collapse: collapse; background: #fff; box-shadow: 0 6px 24px rgba(142,90,90,.10); }
   .guest-table th { background: #8e5a5a; color: #fff; padding: 12px; font-size: 15px; letter-spacing: 3px; }
   .guest-table td { padding: 10px 14px; border-bottom: 1px solid #f3e6e0; font-size: 15px; letter-spacing: 1px; text-align: center; }
   .guest-table tr:nth-child(even) td { background: #fbf5f2; }
@@ -121,8 +122,34 @@
   .guest-table td.names { text-align: left; }
   .footer { text-align: center; color: #b0a0a0; font-size: 12px; letter-spacing: 2px; margin-top: 40px; }
   @media (max-width: 600px) {
+    .hero { padding: 34px 14px 20px; }
     .hero .names { font-size: 26px; letter-spacing: 5px; }
-    .tcell { width: 104px; }
+    .hero .sub { font-size: 16px; letter-spacing: 4px; }
+    .hero .note { font-size: 12px; letter-spacing: 1px; }
+    .hero .ribbon-left, .hero .ribbon-right { opacity: .4; }
+    .hero .ribbon-left svg, .hero .ribbon-right svg { width: 90px; height: 60px; }
+    .container { padding: 20px 12px 48px; }
+    .search-box { padding: 20px 14px; }
+    .search-box h2 { font-size: 18px; }
+    .search-row { flex-direction: column; align-items: stretch; }
+    #searchInput { width: 100%; max-width: none; min-width: 0; font-size: 16px; }
+    #searchBtn { width: 100%; padding: 14px; font-size: 16px; }
+    .chart { flex-direction: column; align-items: stretch; padding: 12px 4px; }
+    .side { width: 100%; min-width: 0; }
+    .tcell { width: 108px; }
+    .tcell.main { width: 120px; min-height: 48px; }
+    .center-aisle { flex-direction: row; justify-content: center; align-items: center; gap: 12px; padding: 14px 0 4px; }
+    .aisle-label { writing-mode: horizontal-tb; margin: 0; padding: 4px 14px; letter-spacing: 4px; border-left: 3px solid #b98a7a; border-top: none; }
+    .door { margin: 0; border: none; padding: 0; font-size: 12px; }
+    .result { padding: 20px 14px; }
+    .result .table-badge { font-size: 24px; padding: 10px 22px; }
+    .section-title { margin: 26px 0 12px; }
+  }
+  @media (max-width: 600px) {
+    .guest-table th { padding: 9px 8px; font-size: 13px; letter-spacing: 1px; }
+    .guest-table td { padding: 9px 8px; font-size: 13px; }
+    .table-wrap { box-shadow: none; }
+    .guest-table { box-shadow: none; }
   }
 
   /* ===== 浪漫裝飾（已移除左右側欄） ===== */
@@ -235,12 +262,14 @@
   </div>
 
   <div class="section-title">完整賓客名單</div>
+  <div class="table-wrap">
   <table class="guest-table">
     <thead>
       <tr><th style="width:100px;">桌號</th><th style="width:90px;">區域</th><th>賓客姓名</th></tr>
     </thead>
     <tbody id="guestList"></tbody>
   </table>
+  </div>
 
   <div class="footer">IAN &amp; VERA 婚宴 · 座位查詢系統</div>
 </div>
